@@ -1,0 +1,21 @@
+services:
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+  python-webapi:
+    build: .
+    container_name: python-webapi
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_HOST=http://ollama:11434   # ⬅ use container name as host
+    volumes:
+      - .:/app
+
+volumes:
+  ollama_data:

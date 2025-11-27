@@ -1,0 +1,4 @@
+brain-ware-env/
+__pycache__/
+.git
+*.pyc
