@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from models.ChatRequest import ChatRequest
 from models.UserInformation import UserInformation
-from services.sql_server_services import get_user_by_mobile, get_last_chat_history
+from services.sql_server_services import *
 from temp import supply_chain_response
 
 import uvicorn
@@ -10,11 +10,19 @@ app = FastAPI()
 
 @app.post("/chat")
 async def chat(request: ChatRequest):
-    print(request)
+    
     userEntity = get_user_by_mobile(request.user.mobile)
     history = get_last_chat_history(userEntity.user_id, request.platform, limit=5)
 
     response = await supply_chain_response(userEntity, history, request.prompt)
+
+    insert_chat_message(
+        chat_id=None,
+        type="text",
+        message=request.prompt,
+        response_message=response,
+        response_type="text",
+    )
 
     return {
         "status": "ok",

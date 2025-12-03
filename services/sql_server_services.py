@@ -1,4 +1,5 @@
 import pyodbc
+from datetime import datetime, date, time
 from models.UserInformation import UserInformation
 from models.ChatHistory import ChatHistory
 from configs.config_loader import load_config
@@ -73,20 +74,57 @@ def get_last_chat_history(user_id: int, platform: str, limit: int = 10) -> list[
     history_list = []
 
     for row in rows:
-        # user role
         history_list.append(ChatHistory(
             chat_id=row.ChatId,
             role="User",
-            message=row.Message,
-            #timestamp=row.Datetime.strftime("%Y-%m-%d %H:%M:%S") if row.Datetime else None
+            message=row.Message
         ))
-        # assistant role
         history_list.append(ChatHistory(
             chat_id=row.ChatId,
             role="Assistant",
-            message=row.ResponseMessage,
-            #timestamp=row.ResponseDatetime.strftime("%Y-%m-%d %H:%M:%S") if row.ResponseDatetime else None
+            message=row.ResponseMessage
         ))
 
 
     return history_list
+
+
+def insert_chat_message(
+        chat_id: int = None,
+        type: str = None,
+        message: str = None,
+        dt: datetime = datetime.now(),
+        response_message: str = None,
+        response_type: str = None,
+        response_dt: datetime = datetime.now(),
+        response_status: str = None
+    ):
+
+    query = """
+        INSERT INTO ChatMessage
+        (ChatId, Type, Message, Datetime, ResponseMessage, ResponseType, ResponseDatetime, ResponseStatus)
+        OUTPUT inserted.Id
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """
+
+    conn = get_database_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(query, (
+        chat_id,
+        type,
+        message,
+        dt,
+        response_message,
+        response_type,
+        response_dt,
+        response_status
+    ))
+
+    inserted_id = cursor.fetchone()[0]
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return inserted_id
