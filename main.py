@@ -1,30 +1,41 @@
-import os
-import uvicorn
-
 from fastapi import FastAPI
-from pydantic import BaseModel
-from langchain_ollama import ChatOllama
+from models.ChatRequest import ChatRequest
+from models.UserInformation import UserInformation
+from services.sql_server_services import get_user_by_mobile, get_last_chat_history
+from temp import supply_chain_response
+
+import uvicorn
 
 app = FastAPI()
 
-ollama_host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-
-llm = ChatOllama(
-    model="mshojaei77/gemma3persian:latest",
-    base_url=ollama_host,
-    temperature=0
-)
+@app.post("/chat")
+async def chat(request: ChatRequest):
+    print(request)
+    # userEntity = get_user_by_mobile(request.user.mobile)
+    # history = get_last_chat_history(userEntity.user_id, request.platform, limit=5)
 
 
-class AskRequest(BaseModel):
-    prompt: str
+    user_info = "نام کاربر: علی، مدیر خرید"
+    history = "جلسه قبلی درباره تأمین‌کنندگان برنج بود."
+    question = "سلام، برنج فروشی های فردیس رو بهم معرفی می کنی؟"
 
+    response = await supply_chain_response(user_info, history, question)
 
-@app.post("/ask")
-def ask_llm(request: AskRequest):
-    response = llm.invoke(request.prompt)
-    return {"response": response}
-
+    return {
+        "status": "ok",
+        "response": response
+    }
+    # return {
+    #     "status": "ok",
+    #     "prompt": request.prompt,
+    #     "user": userEntity,
+    #     "history": history
+    # }
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=1010,
+        reload=True
+    )

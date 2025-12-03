@@ -1,0 +1,9 @@
+{
+    "sql_server": {
+        "driver": "ODBC Driver 17 for SQL Server",
+        "server": "ai.befoys.com",
+        "database": "befoys-brain-ware",
+        "username": "sa",
+        "password": "Befoys@102030AI"
+    }
+}
