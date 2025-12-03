@@ -4,12 +4,15 @@ from langchain_ollama import ChatOllama, OllamaEmbeddings
 from langchain_core.runnables import RunnableSequence
 from langchain_core.output_parsers import StrOutputParser
 
+from models.UserInformation import UserInformation
+from models.ChatHistory import ChatHistory
+
 from fastmcp import Client
 from datetime import datetime
 import asyncio
 import warnings
 
-async def supply_chain_response(user_info: str, history: str, question: str):
+async def supply_chain_response(user_info: UserInformation, history: list[ChatHistory], question: str):
     prompt = ChatPromptTemplate.from_messages([
         ("system", """
         Role:\n
@@ -59,12 +62,14 @@ async def supply_chain_response(user_info: str, history: str, question: str):
         )
         context = call_server.content[0].text
 
-    # Run the chain with all inputs
-    response = chain.invoke({
-        "user_info": user_info,
-        "history": history,
-        "context": context,
-        "question": question
-    })
+        print("Context: \n", context)
 
-    return response
+        # Run the chain with all inputs
+        response = chain.invoke({
+            "user_info": user_info,
+            "history": history,
+            "context": context,
+            "question": question
+        })
+
+        return response

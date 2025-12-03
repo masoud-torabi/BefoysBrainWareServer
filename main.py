@@ -11,26 +11,18 @@ app = FastAPI()
 @app.post("/chat")
 async def chat(request: ChatRequest):
     print(request)
-    # userEntity = get_user_by_mobile(request.user.mobile)
-    # history = get_last_chat_history(userEntity.user_id, request.platform, limit=5)
+    userEntity = get_user_by_mobile(request.user.mobile)
+    history = get_last_chat_history(userEntity.user_id, request.platform, limit=5)
 
-
-    user_info = "نام کاربر: علی، مدیر خرید"
-    history = "جلسه قبلی درباره تأمین‌کنندگان برنج بود."
-    question = "سلام، برنج فروشی های فردیس رو بهم معرفی می کنی؟"
-
-    response = await supply_chain_response(user_info, history, question)
+    response = await supply_chain_response(userEntity, history, request.prompt)
 
     return {
         "status": "ok",
-        "response": response
+        "prompt": request.prompt,
+        "response": response,
+        "user": userEntity,
+        "history": history
     }
-    # return {
-    #     "status": "ok",
-    #     "prompt": request.prompt,
-    #     "user": userEntity,
-    #     "history": history
-    # }
 
 if __name__ == "__main__":
     uvicorn.run(
