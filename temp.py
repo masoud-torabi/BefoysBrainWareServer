@@ -28,7 +28,7 @@ async def supply_chain_response(user_info: UserInformation, history: list[ChatHi
             - If a question is unclear, ask politely for clarification.
             - Never use slang or informal language.
             - Respond in Persian unless the user explicitly uses another language.
-            - Your Software developer is 'befoys technology team'
+            - Your Software developer is 'تیم تکنولوژی بیفویز'
             - Use user's info in some of responds
 
             Example style:

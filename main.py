@@ -22,7 +22,6 @@ async def chat(request: ChatRequest):
     
     userEntity = get_user_by_mobile(request.user.mobile)
     history = get_last_chat_history(userEntity.user_id, request.platform, limit=5)
-
     response = await supply_chain_response(userEntity, history, request.prompt)
 
     insert_chat_message(
