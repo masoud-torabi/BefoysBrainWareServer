@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from models.ChatRequest import ChatRequest
 from models.UserInformation import UserInformation
 from services.sql_server_services import *
+# from services.chat_services import *
 from temp import supply_chain_response
 
 import uvicorn
@@ -22,7 +23,7 @@ async def chat(request: ChatRequest):
     
     userEntity = get_user_by_mobile(request.user.mobile)
     history = get_last_chat_history(userEntity.user_id, request.platform, limit=5)
-    response = await supply_chain_response(userEntity, history, request.prompt)
+    think, response = await supply_chain_response(userEntity, history, request.prompt)
 
     insert_chat_message(
         chat_id=None,
@@ -36,6 +37,7 @@ async def chat(request: ChatRequest):
         "status": "ok",
         "prompt": request.prompt,
         "response": response,
+        "think": think,
         "user": userEntity,
         "history": history
     }
