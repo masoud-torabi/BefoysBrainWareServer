@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from models.ChatRequest import ChatRequest
 from models.UserInformation import UserInformation
 from services.sql_server_services import *
@@ -7,6 +8,14 @@ from temp import supply_chain_response
 import uvicorn
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/chat")
 async def chat(request: ChatRequest):
