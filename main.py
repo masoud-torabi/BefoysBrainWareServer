@@ -1,12 +1,12 @@
+import time
+import uvicorn
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from models.ChatRequest import ChatRequest
 from models.UserInformation import UserInformation
 from services.sql_server_services import *
-# from services.chat_services import *
-from temp import supply_chain_response
-
-import uvicorn
+from local_mcp_server.mcp_client import *
 
 app = FastAPI()
 
@@ -21,24 +21,30 @@ app.add_middleware(
 @app.post("/chat")
 async def chat(request: ChatRequest):
     
+    start = time.perf_counter()
     userEntity = get_user_by_mobile(request.user.mobile)
     history = get_last_chat_history(userEntity.user_id, request.platform, limit=5)
     think, response = await supply_chain_response(userEntity, history, request.prompt)
+    end = time.perf_counter()
+    elapsed = end - start
 
     insert_chat_message(
-        chat_id=None,
+        chat_id=1,
         type="text",
         message=request.prompt,
         response_message=response,
         response_type="text",
+        elapsed=elapsed,
+        thinking=think
     )
-
+    
     return {
         "status": "ok",
         "prompt": request.prompt,
         "response": response,
         "think": think,
         "user": userEntity,
+        "elapsed": elapsed,
         "history": history
     }
 

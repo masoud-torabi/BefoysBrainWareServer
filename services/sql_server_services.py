@@ -1,5 +1,5 @@
 import pyodbc
-from datetime import datetime, date, time
+from datetime import datetime
 from models.UserInformation import UserInformation
 from models.ChatHistory import ChatHistory
 from configs.config_loader import load_config
@@ -97,14 +97,16 @@ def insert_chat_message(
         response_message: str = None,
         response_type: str = None,
         response_dt: datetime = datetime.now(),
-        response_status: str = None
+        response_status: str = None,
+        elapsed: float = None,
+        thinking: str = None
     ):
 
     query = """
         INSERT INTO ChatMessage
-        (ChatId, Type, Message, Datetime, ResponseMessage, ResponseType, ResponseDatetime, ResponseStatus)
+        (ChatId, Type, Message, Datetime, ResponseMessage, ResponseType, ResponseDatetime, ResponseStatus, TimeElapsed, Thinking)
         OUTPUT inserted.Id
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
 
     conn = get_database_connection()
@@ -118,7 +120,9 @@ def insert_chat_message(
         response_message,
         response_type,
         response_dt,
-        response_status
+        response_status,
+        elapsed,
+        thinking
     ))
 
     inserted_id = cursor.fetchone()[0]
