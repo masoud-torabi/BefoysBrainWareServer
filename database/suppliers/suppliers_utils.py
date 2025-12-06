@@ -4,8 +4,8 @@ import faiss
 import pickle
 from langchain_ollama import OllamaEmbeddings
 
-index = faiss.read_index("./database_suppliers/befoys_suppliers_database.bin")
-with open("./database_suppliers/befoys_suppliers_metadata.pkl", "rb") as f:
+index = faiss.read_index("./database/suppliers/befoys_suppliers_database.bin")
+with open("./database/suppliers/befoys_suppliers_metadata.pkl", "rb") as f:
     metadata = pickle.load(f)
 
 embeddings_model = OllamaEmbeddings(model="bge-m3:567m")

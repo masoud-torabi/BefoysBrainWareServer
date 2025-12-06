@@ -18,7 +18,7 @@ from datetime import datetime
 import asyncio
 import warnings
 
-async def supply_chain_response(user_info: UserInformation, history: list[ChatHistory], question: str):
+async def agent_response(user_info: UserInformation, history: list[ChatHistory], question: str):
     prompt_str = f"""
         You are a polite and professional Supply Chain Manager working in the hospitality industry (hotels and restaurants). 
         Your job is to answer users’ questions about supply chain processes, procurement, inventory management, logistics, 
@@ -40,7 +40,8 @@ async def supply_chain_response(user_info: UserInformation, history: list[ChatHi
 
         Tools to use:
         get_product_info: دریافت اطلاعات محصولات
-        search_suppliers: جستجوی تامین کنندگان 
+        search_suppliers: جستجوی تامین کنندگان
+        search_public_info: دریافت اطلاعات عمومی در رابطه با زنجیره تامین
     """
 
     model = ChatOllama(

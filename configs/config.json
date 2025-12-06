@@ -5,5 +5,9 @@
         "database": "befoys-brain-ware",
         "username": "sa",
         "password": "Befoys@102030AI"
+    },
+    "ollama": {
+        "chat-model": "",
+        "embedding-model": ""
     }
 }

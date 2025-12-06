@@ -1,10 +1,19 @@
 import asyncio
 from mcp.server.fastmcp import FastMCP
-from database_suppliers.suppliers_utils import search_top_k_suppliers
+from database.suppliers.suppliers_utils import search_top_k_suppliers
+from database.public.public_utils import search_text_data
 
 mcp = FastMCP("supply-chain-mcp",
                host="0.0.0.0",
                port=9090)
+
+@mcp.tool()
+async def search_public_info(query: str) -> str:
+    """
+        Fetch public supplychain information from database
+        Args: query
+    """
+    return search_text_data(query, k=1)
 
 @mcp.tool()
 async def search_suppliers(query: str) -> dict:
@@ -19,7 +28,6 @@ async def get_product_info(product_id: int) -> dict:
     """
     fetch products from database
     """
-
     products = {
         101: {
             "name": "Rice – Hashemi",
@@ -59,6 +67,5 @@ async def get_product_info(product_id: int) -> dict:
 
 if __name__ == "__main__":
     asyncio.run(mcp.run(transport="streamable-http"))
-
 
 # http://localhost:9090/mcp

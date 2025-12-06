@@ -24,7 +24,7 @@ async def chat(request: ChatRequest):
     start = time.perf_counter()
     userEntity = get_user_by_mobile(request.user.mobile)
     history = get_last_chat_history(userEntity.user_id, request.platform, limit=5)
-    think, response = await supply_chain_response(userEntity, history, request.prompt)
+    think, response = await agent_response(userEntity, history, request.prompt)
     end = time.perf_counter()
     elapsed = end - start
 
